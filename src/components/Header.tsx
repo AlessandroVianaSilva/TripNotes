@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import travelerLogo from "../../public/images/Traveler-logo.svg";
-import Nav from "./Nav";
+// import Nav from "./Nav";
 import { useEffect, useState } from "react";
 import { IoClose, IoMenu } from "react-icons/io5";
 // import { Button } from "react-scroll";
@@ -48,20 +48,20 @@ const Header = () => {
         </div>
 
         {/* web */}
-        <Nav
+        {/* <Nav
           containerStyles={"hidden lg:flex gap-x-10 items-start justify-center"}
           linkStyles={"capitalize cursor-pointer my-4 relative transition-all"}
-        />
+        /> */}
 
         {/* mobile */}
-        <Nav
+        {/* <Nav
           containerStyles={`${
             menuOpened
               ? "flex items-start flex-col justify-center fixed top-20 p-12 bg-white rounded-lg transition-all duration-500 shawdow-md right-0 w-60"
               : "flex items-start flex-col justify-center fixed top-20 p-12 bg-white rounded-lg transition-all duration-500 shawdow-md right-[-100%] w-60"
           }`}
           linkStyles={"capitalize cursor-pointer my-4 relative transition-all"}
-        />
+        /> */}
 
         {/* icones e botoes */}
         <div className="flex items-center justify-center">
