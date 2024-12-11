@@ -18,7 +18,9 @@ import { Sheet, SheetContent } from '@/components/navbar/ui//sheet';
 import { NavItems } from '@/config';
 import { Menu } from 'lucide-react';
 import Image from "next/image";
-import travelerLogo from "../../public/images/Traveler-logo.svg";
+// import travelerLogo from "../public/images/Traveler-logo.svg";
+
+import travelerLogo from '../../../public/images/Traveler-logo.svg'
 
 export default function Header() {
   const navItems = NavItems();
