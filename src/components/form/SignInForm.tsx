@@ -56,14 +56,14 @@ const SignInForm = () => {
     } else {
       //nao ta dando o refresh automatico na pagina - verificar dps o pq
       router.refresh()
-      router.push('/home');
+      router.push('/');
 
     }
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='w-full '>
         <div className='space-y-2'>
           <FormField
             control={form.control}
