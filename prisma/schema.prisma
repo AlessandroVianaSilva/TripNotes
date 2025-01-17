@@ -21,4 +21,30 @@ model User {
   password String
   createAt DateTime @default(now())
   updateUt DateTime @updatedAt
+
+}
+
+model Travel {
+  id          Int      @id @default(autoincrement())
+  origin      String
+  destination String
+  time        String
+  date        DateTime
+
+  @@map("travels")  // Mapeia a tabela 'travels' no banco de dados
+
+  // Relacionamento com Passenger
+  passengers Passenger[]
+}
+
+model Passenger {
+  id                 Int      @id @default(autoincrement())
+  tripId             Int
+  name               String
+  destinationStreet  String
+  destinationNumber  String
+  createdAt          DateTime @default(now())
+
+  // Relacionamento com a tabela Travel
+  Travel Travel @relation(fields: [tripId], references: [id], onDelete: Cascade)
 }

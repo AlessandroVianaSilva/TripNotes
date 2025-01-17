@@ -5,11 +5,11 @@ import { Inter } from 'next/font/google';
 import ContextProvider from '@/components/navbar/ContextProvider';
 
 // import '../app/styles/globals.css';
-import '../styles/globals.css'
+import '../../../styles/globals.css'
 
 import SideNav from '@/components/navbar/Sidenav';
 
-import Header from './header';
+import Header from '../../../(home)/header';
 
 const inter = Inter({ subsets: ['latin'] });
 
