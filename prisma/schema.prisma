@@ -13,38 +13,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  username String @unique
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  username String   @unique
   password String
   createAt DateTime @default(now())
   updateUt DateTime @updatedAt
-
 }
 
 model Travel {
-  id          Int      @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   origin      String
   destination String
   time        String
   date        DateTime
+  passengers  Passenger[]
 
-  @@map("travels")  // Mapeia a tabela 'travels' no banco de dados
-
-  // Relacionamento com Passenger
-  passengers Passenger[]
+  @@map("travels")
 }
 
 model Passenger {
-  id                 Int      @id @default(autoincrement())
-  tripId             Int
-  name               String
-  destinationStreet  String
-  destinationNumber  String
-  createdAt          DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  tripId    Int
+  name      String
+  createdAt DateTime @default(now())
+  number    String
+  street    String
+  Travel    Travel   @relation(fields: [tripId], references: [id], onDelete: Cascade)
 
-  // Relacionamento com a tabela Travel
-  Travel Travel @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  @@map("passengers")
 }

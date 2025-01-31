@@ -1,65 +1,31 @@
+
 import { supabase } from "@/lib/supabaseClient";
+import { NextResponse } from "next/server";
 
-export const addPassenger = async (tripId: number, name: string, destinationStreet: string, destinationNumber: string) => {
-  const { data, error } = await supabase
-    .from("passengers")
-    .insert([
-      {
-        tripId,
-        name,
-        destinationStreet,
-        destinationNumber,
-      },
-    ])
-    .single();
+export async function POST(req: Request) {
+  try {
+    const body = await req.json(); // Lê o corpo da requisição
+    const { name, number, street, tripId } = body;
 
-  if (error) {
-    throw new Error(error.message);
+    // Verifica campos obrigatórios
+    if (!name || !number || !street || !tripId) {
+      return NextResponse.json({ error: "Campos obrigatórios ausentes" }, { status: 400 });
+    }
+
+    // Insere o passageiro no banco de dados usando Supabase
+    const { data, error } = await supabase
+      .from("passengers")
+      .insert([{ name, number, street, tripId }])
+      .select("*"); // Retorna o registro inserido
+
+    if (error) {
+      console.error("Erro ao criar passageiro:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data[0], { status: 201 });
+  } catch (error) {
+    console.error("Erro ao processar a requisição:", error);
+    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 });
   }
-
-  return data;  // Retorna o passageiro recém-adicionado
-};
-
-
-// // api/passenger.js
-
-// // api/passenger.ts
-
-// import { supabase } from "@/lib/supabaseClient"; // Importando o cliente Supabase
-
-// interface Passenger {
-//   tripId: number;
-//   name: string;
-//   destinationStreet: string;
-//   destinationNumber: string;
-// }
-
-// export async function addPassenger({
-//   tripId,
-//   name,
-//   destinationStreet,
-//   destinationNumber,
-// }: Passenger) {
-//   try {
-//     const { data, error } = await supabase
-//       .from('passengers') // A tabela dos passageiros
-//       .insert([
-//         {
-//           tripId,
-//           name,
-//           destinationStreet,
-//           destinationNumber,
-//         },
-//       ]);
-
-//     if (error) throw error;
-
-//     return data;
-//   } catch (error) {
-//     console.error("Erro ao adicionar passageiro:");
-//     throw new Error("Não foi possível adicionar o passageiro.");
-//   }
-// }
-
-
-
+}
