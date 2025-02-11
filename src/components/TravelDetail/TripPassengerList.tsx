@@ -1,13 +1,10 @@
-"use client";
-// import { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/lib/supabaseClient";
-// import AddingPassengerPopup from "./AddingPassengerPopup";
-import { useRouter } from "next/navigation";
-// import { Passenger } from "@prisma/client";
 
+"use client";
+
+import { supabase } from "@/lib/supabaseClient";
 import { useEffect, useState } from "react";
 import AddingPassengerPopup from "./AddingPassengerPopup";
-// import { Passenger } from "@prisma/client";
+import EditPassengerPopup from "./EditPassengerPopup"; // Importe o popup de edição
 
 interface Passenger {
   id: number;
@@ -15,22 +12,23 @@ interface Passenger {
   street: string;
   number: string;
   tripId: number;
+  price: string;
+  neighborhood: string;
 }
 
 const TripPassengerList = ({ tripId }: { tripId: number }) => {
   const [passengers, setPassengers] = useState<Passenger[]>([]);
-  const [showPopup, setShowPopup] = useState(false); // Controla a visibilidade do popup
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false); // Modal de confirmação de exclusão
-  const [passengerToDelete, setPassengerToDelete] = useState<Passenger | null>(
-    null
-  ); // Viagem a ser excluída
-  const router = useRouter();
+  const [showPopup, setShowPopup] = useState(false);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [editingPassenger, setEditingPassenger] = useState<Passenger | null>(null);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [passengerToDelete, setPassengerToDelete] = useState<number | null>(null);
 
   const fetchPassengers = async () => {
     const { data, error } = await supabase
       .from("passengers")
       .select("*")
-      .eq("tripId", tripId); // Filtra pelo tripId
+      .eq("tripId", tripId);
 
     if (error) {
       console.error("Erro ao buscar passageiros:", error.message);
@@ -40,115 +38,116 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
   };
 
   const handlePassengerSave = (newPassenger: Passenger) => {
-    console.log("Nova viagem recebida no pai:", newPassenger);
-    setPassengers((prevPassengers) => [...prevPassengers, newPassenger]); // Adiciona a nova viagem ao estado
-    setShowPopup(false); // Fecha o popup
-    console.log(newPassenger);
+    setPassengers((prev) => [...prev, newPassenger]);
+    setShowPopup(false);
   };
-  // const handlePassengerSave = (newPassenger: Passenger) => {
-  //   setPassengers((prev) => [...prev, newPassenger]);
-  // };
 
-  // Função para excluir a viagem
-  const handleDeletePassenger = async (id: number) => {
-    const { error } = await supabase.from("passengers").delete().eq("id", id);
+  const confirmDeletePassenger = (id: number) => {
+    setPassengerToDelete(id);
+    setShowConfirmDelete(true);
+  };
+
+  const handleDeletePassenger = async () => {
+    if (!passengerToDelete) return;
+
+    const { error } = await supabase.from("passengers").delete().eq("id", passengerToDelete);
 
     if (error) {
       console.error("Erro ao excluir passageiro:", error.message);
     } else {
-      setPassengers((prevPassengers) =>
-        prevPassengers.filter((passenger) => passenger.id !== id)
-      ); // Remove a viagem do estado
-      setShowConfirmDelete(false); // Fecha a modal
+      setPassengers((prev) => prev.filter((passenger) => passenger.id !== passengerToDelete));
     }
+
+    setShowConfirmDelete(false);
+    setPassengerToDelete(null);
   };
 
-  // Quando o botão Excluir for clicado, configura o estado da viagem a ser excluída
-  const handleOpenDeleteConfirm = (passenger: Passenger) => {
-    setPassengerToDelete(passenger);
-    setShowConfirmDelete(true); // Exibe a modal de confirmação
+  const handleEditPassenger = (passenger: Passenger) => {
+    setEditingPassenger(passenger);
+    setShowEditPopup(true);
   };
 
-  // Carrega as viagens ao montar o componente
+  const handleUpdatePassenger = (updatedPassenger: Passenger) => {
+    setPassengers((prev) =>
+      prev.map((passenger) =>
+        passenger.id === updatedPassenger.id ? updatedPassenger : passenger
+      )
+    );
+    setShowEditPopup(false);
+  };
+
   useEffect(() => {
     fetchPassengers();
   }, []);
 
   return (
     <div className="p-4">
-      <div>
-        <h1 className="text-2xl font-bold mb-4">Passageiros</h1>
+      <h1 className="text-2xl font-bold mb-4">Passageiros</h1>
 
-        {/* Botão para abrir o popup */}
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-          onClick={() => setShowPopup(true)}
-        >
-          Adicionar
-        </button>
+      <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={() => setShowPopup(true)}>
+        Adicionar Passageiro
+      </button>
 
-        {/* Popup para adicionar viagem */}
-        {showPopup && (
-          <AddingPassengerPopup
-            onPassengerSave={handlePassengerSave}
-            setShowPopup={setShowPopup}
-            tripId={tripId} // Passa o tripId correto
-          />
-        )}
-      </div>
+      {showPopup && (
+        <AddingPassengerPopup onPassengerSave={handlePassengerSave} setShowPopup={setShowPopup} tripId={tripId} />
+      )}
 
-      {/* Lista de viagens */}
+      {showEditPopup && editingPassenger && (
+        <EditPassengerPopup
+          passenger={editingPassenger}
+          onUpdatePassenger={handleUpdatePassenger}
+          setShowEditPopup={setShowEditPopup}
+        />
+      )}
+
       <div className="mt-6">
-        {/* <h2 className="text-xl font-semibold">Passageiros:</h2> */}
-
         {passengers.length > 0 ? (
           <div className="mt-4">
-            {/* Cabeçalho */}
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-4 p-3 bg-blue-500 text-white font-bold rounded-t dark:bg-blue-600 dark:text-white">
-              <div>Origem</div>
-              <div>Destino</div>
-              <div>Data</div>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 p-3 bg-blue-500 text-white font-bold rounded-t dark:bg-blue-600 dark:text-white">
+              <div>Preço</div>
+              <div>Nome</div>
+              <div>Bairro</div>
               <div>Visualizar</div>
               <div>Excluir</div>
             </div>
 
-            {/* Lista de viagens */}
             {passengers.map((passenger) => (
-              <div
-                key={passenger.id}
-                className="grid grid-cols-3 sm:grid-cols-5 gap-4 p-3 border-b last:border-none bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
-              >
-                {/* Colunas com dados */}
+              <div key={passenger.id} className="grid grid-cols-3 sm:grid-cols-5 gap-3 p-4 border-b last:border-none bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600">
+                <div>{passenger.price}</div>
                 <div>{passenger.name}</div>
-                <div>{passenger.number}</div>
-                {/* <div>{formatDate(trip.date)}</div> */}
+                <div>{passenger.neighborhood}</div>
 
-                {/* Botão Visualizar */}
-                <div>
-                  <button
-                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
-                    // onClick={() => router.push(/viagem/${passenger.id})}
-                  >
-                    Visualizar
-                  </button>
-                </div>
+                <button className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700" onClick={() => handleEditPassenger(passenger)}>
+                  Ver mais
+                </button>
 
-                {/* Botão Excluir */}
-                <div>
-                  <button
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-                    // onClick={() => handleOpenDeleteConfirm(trip)} // Chama a função para abrir a modal
-                  >
-                    Excluir
-                  </button>
-                </div>
+                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onClick={() => confirmDeletePassenger(passenger.id)}>
+                  Excluir
+                </button>
               </div>
             ))}
           </div>
         ) : (
-          <p className="mt-2">Nenhuma viagem salva ainda.</p>
+          <p className="mt-2">Nenhum passageiro salvo ainda.</p>
         )}
       </div>
+
+      {/* Modal de confirmação de exclusão */}
+      {showConfirmDelete && passengerToDelete !== null && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-gray-300 dark:bg-gray-800 p-6 rounded shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4 text-center">Você tem certeza?</h2>
+            <div className="flex justify-center space-x-4">
+              <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onClick={handleDeletePassenger}>
+                Excluir
+              </button>
+              <button className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-black" onClick={() => setShowConfirmDelete(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

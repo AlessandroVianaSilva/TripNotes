@@ -4,39 +4,74 @@ import { supabase } from "@/lib/supabaseClient";
 import AddingTravelPopup from "../../components/TravelList/AddingTravelPopup";
 import { useRouter } from "next/navigation";
 
-type Trip = {
+type Trip = { 
   id: number;
   origin: string;
   destination: string;
   time: string;
   date: string;
+  userId: number;
 };
 
-const TravelManager = () => {
+type TravelManagerProps = {
+  userId: number; // Recebendo o ID do usuário
+};
+
+const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
   const [travels, setTravels] = useState<Trip[]>([]); // Estado para armazenar as viagens
   const [showPopup, setShowPopup] = useState(false); // Controla a visibilidade do popup
   const [showConfirmDelete, setShowConfirmDelete] = useState(false); // Modal de confirmação de exclusão
   const [tripToDelete, setTripToDelete] = useState<Trip | null>(null); // Viagem a ser excluída
   const router = useRouter();
+  // const [userId, setUserId] = useState<number | null>(null);
+
+  // Busca viagens quando userId estiver definido
+  useEffect(() => {
+    if (userId !== null) {
+      fetchTravels();
+    }
+  }, [userId]);
+
+  // Busca viagens quando userId estiver definido
+  useEffect(() => {
+    if (userId !== null) {
+      fetchTravels();
+    }
+  }, [userId]);
 
   // Função para buscar as viagens do Supabase
   const fetchTravels = async () => {
-    const { data, error } = await supabase.from("travels").select("*");
 
+    if (!userId) {
+      console.error("userId não definido");
+      return;
+    }
+
+    const { data, error } = await supabase
+    .from("travels")
+    .select("*")
+    .eq("userId", userId);
+ // Busca as viagens associadas ao usuário;
+  
     if (error) {
       console.error("Erro ao buscar viagens:", error.message);
     } else {
-      // Verificando se 'data' é um array de 'Trip' e atualizando o estado
+      console.log("Viagens recebidas:", data); // Log para verificar os dados
       if (Array.isArray(data)) {
-        setTravels(data); // Agora o TypeScript sabe que 'data' é um array de 'Trip'
+        // Fazendo o cast explícito de data para o tipo Trip[]
+        setTravels(data as Trip[]); // Agora o TypeScript sabe que 'data' é um array de 'Trip'
       }
     }
   };
+  
 
   // Função chamada após salvar uma viagem
   const handleTripSave = (newTrip: Trip) => {
     console.log("Nova viagem recebida no pai:", newTrip);
-    setTravels((prevTravels) => [...prevTravels, newTrip]); // Adiciona a nova viagem ao estado
+    setTravels((prevTravels) => {
+      console.log("Viagens anteriores:", prevTravels); // Log para verificar o estado anterior
+      return [...prevTravels, newTrip]; // Adiciona a nova viagem ao estado
+    });
     setShowPopup(false); // Fecha o popup
   };
 
@@ -71,10 +106,10 @@ const TravelManager = () => {
     setShowConfirmDelete(true); // Exibe a modal de confirmação
   };
 
-  // Carrega as viagens ao montar o componente
-  useEffect(() => {
-    fetchTravels();
-  }, []);
+  // // Carrega as viagens ao montar o componente
+  // useEffect(() => {
+  //   fetchTravels();
+  // }, [userId]); // Recarrega quando o userId mudar
 
   return (
     <div className="p-4">
@@ -90,10 +125,11 @@ const TravelManager = () => {
         </button>
 
         {/* Popup para adicionar viagem */}
-        {showPopup && (
+        {showPopup && userId && (
           <AddingTravelPopup
             onTripSave={handleTripSave} // Passando a função para salvar a viagem
             setShowPopup={setShowPopup} // Passando a função para fechar o popup
+            userId={userId} // Passando o ID do usuário para o componente filho
           />
         )}
       </div>
@@ -136,7 +172,7 @@ const TravelManager = () => {
 
                 {/* Botão Excluir */}
                 <div>
-                <button
+                  <button
                     className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
                     onClick={() => handleOpenDeleteConfirm(trip)} // Chama a função para abrir a modal
                   >
@@ -177,7 +213,6 @@ const TravelManager = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

@@ -9,7 +9,6 @@ const TravelDetailsPage = ({ params }: { params: { id: string } }) => {
     <div>
       <Details id={params.id} />
       <TripPassengerList tripId={Number(params.id)} />
-      {/* <TripPassengerList tripId={params.id} /> */}
 
     </div>
   );

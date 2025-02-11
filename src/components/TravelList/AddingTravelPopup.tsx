@@ -1,135 +1,45 @@
-// "use client";
-
-// import { useState } from "react";
-// import { supabase } from "@/lib/supabaseClient";
-
-// type Trip = {
-//   id: number;           // ID da viagem
-//   origin: string;       // Origem da viagem
-//   destination: string;  // Destino da viagem
-//   time: string;         // Horário da viagem
-//   date: string;         // Data da viagem
-// };
-
-// type AddingTravelPopupProps = {
-//   onTripSave: (newTrip: Trip) => void;
-//   setShowPopup: (show: boolean) => void;
-// };
-
-// const AddingTravelPopup = ({ onTripSave, setShowPopup }: AddingTravelPopupProps) => {
-//   const [formData, setFormData] = useState<Trip>({
-//     id: 0,
-//     origin: "",
-//     destination: "",
-//     time: "",
-//     date: "",
-//   });
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     // Aqui você pode chamar o onTripSave passando a nova viagem
-//     onTripSave(formData);
-//     setShowPopup(false);  // Fecha o popup após salvar
-//   };
-
-//   return (
-//     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-//       <div className="bg-white p-6 rounded shadow-lg w-96">
-//         <h2 className="text-2xl font-bold mb-4">Adicionar Viagem</h2>
-
-//         <form onSubmit={handleSubmit}>
-//           <input
-//             type="text"
-//             value={formData.origin}
-//             onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
-//             placeholder="Origem"
-//             className="mb-2 p-2 w-full border rounded"
-//           />
-//           <input
-//             type="text"
-//             value={formData.destination}
-//             onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-//             placeholder="Destino"
-//             className="mb-2 p-2 w-full border rounded"
-//           />
-//           <input
-//             type="text"
-//             value={formData.time}
-//             onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-//             placeholder="Horário"
-//             className="mb-2 p-2 w-full border rounded"
-//           />
-//           <input
-//             type="date"
-//             value={formData.date}
-//             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-//             placeholder="Data"
-//             className="mb-4 p-2 w-full border rounded"
-//           />
-
-//           <div className="flex justify-between">
-//             <button
-//               type="button"
-//               className="text-red-500"
-//               onClick={() => setShowPopup(false)} // Fecha o popup
-//             >
-//               Cancelar
-//             </button>
-//             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-//               Salvar Viagem
-//             </button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddingTravelPopup;
-
-"use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { supabase } from "@/lib/supabaseClient";
 
 type Trip = {
-  id: number; // ID da viagem
-  origin: string; // Origem da viagem
-  destination: string; // Destino da viagem
-  time: string; // Horário da viagem
-  date: string; // Data da viagem
+  id: number;
+  origin: string;
+  destination: string;
+  time: string;
+  date: string;
+  userId: number;
 };
 
 type AddingTravelPopupProps = {
   onTripSave: (newTrip: Trip) => void;
   setShowPopup: (show: boolean) => void;
+  userId: number; // Agora recebendo o userId
 };
 
 const AddingTravelPopup = ({
   onTripSave,
   setShowPopup,
+  userId,
 }: AddingTravelPopupProps) => {
-  const [formData, setFormData] = useState<Trip>({
-    id: 0,
-    origin: "",
-    destination: "",
-    time: "",
-    date: "",
-  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Trip>();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true); // Indica que o envio está em progresso
-
-    const { origin, destination, time, date } = formData;
+  const onSubmit = async (formData: Trip) => {
+    setIsSubmitting(true);
 
     try {
       const { data, error } = await supabase
         .from("travels")
-        .insert([{ origin, destination, time, date }])
-        .select("*"); // Garante que todos os campos sejam retornados
+        .insert([{ ...formData,  userId }]) // Corrigindo a estrutura do objeto
+        .select("*");
 
       if (error) {
         console.error("Erro ao salvar no Supabase:", error.message);
@@ -149,76 +59,101 @@ const AddingTravelPopup = ({
     } catch (err) {
       console.error("Erro inesperado:", err);
     } finally {
-      setIsSubmitting(false); // Finaliza o estado de envio
+      setIsSubmitting(false);
     }
+  };
+
+  // Função para formatar a string: primeira letra maiúscula e o resto minúsculas
+  const capitalizeFirstLetter = (str: string) => {
+    return str
+      .replace(/\b\w/g, (char) => char.toUpperCase()) // Primeira letra maiúscula
+      .replace(/[^A-Za-zÀ-ÖØ-ß\s]/g, ""); // Remove números e caracteres especiais
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded shadow-lg w-96">
-        <div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white text-center">Inserir dados</h2>
-          
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={formData.origin}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/.test(value)) {
-                const formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
-                setFormData({ ...formData, origin: formattedValue });
-              }
-            }}
-            placeholder="Origem"
-            className="mb-2 p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700"
-          />
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white text-center">
+          Inserir dados
+        </h2>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-2">
+            <input
+              type="text"
+              placeholder="Origem"
+              {...register("origin", {
+                required: "Origem é obrigatória.",
+                pattern: {
+                  value: /^[A-Za-zÀ-ÖØ-ß\s]*$/, // Permitindo letras e espaços
+                  message: "A origem deve conter apenas letras e espaços.",
+                },
+                setValueAs: (value) => capitalizeFirstLetter(value), // Formatar para primeira letra maiúscula
+              })}
+              onChange={(e) => {
+                e.target.value = capitalizeFirstLetter(e.target.value); // Formatar ao digitar
+              }}
+              className={`p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700 ${
+                errors.origin ? "border-red-500" : ""
+              }`}
+            />
+            {errors.origin && (
+              <p className="text-red-500 text-sm">{errors.origin.message}</p>
+            )}
+          </div>
 
-          <input
-            type="text"
-            value={formData.destination}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^[A-Za-zÀ-ÖØ-öø-ÿ\s]*$/.test(value)) {
-                const formattedValue = value.charAt(0).toUpperCase() + value.slice(1);
-                setFormData({ ...formData, destination: formattedValue });
-              }
-            }}
-            placeholder="Destino"
-            className="mb-2 p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700"
-          />
+          <div className="mb-2">
+            <input
+              type="text"
+              placeholder="Destino"
+              {...register("destination", {
+                required: "Destino é obrigatório.",
+                pattern: {
+                  value: /^[A-Za-zÀ-ÖØ-ß\s]*$/, // Permitindo letras e espaços
+                  message: "O destino deve conter apenas letras e espaços.",
+                },
+                setValueAs: (value) => capitalizeFirstLetter(value), // Formatar para primeira letra maiúscula
+              })}
+              onChange={(e) => {
+                e.target.value = capitalizeFirstLetter(e.target.value); // Formatar ao digitar
+              }}
+              className={`p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700 ${
+                errors.destination ? "border-red-500" : ""
+              }`}
+            />
+            {errors.destination && (
+              <p className="text-red-500 text-sm">
+                {errors.destination.message}
+              </p>
+            )}
+          </div>
 
-          <input
-            type="text"
-            value={formData.time}
-            onChange={(e) => {
-              let value = e.target.value.replace(/\D/g, ""); // Remove tudo que não é número
-              if (value.length > 6) value = value.slice(0, 6); // Limita a 6 caracteres
+          <div className="mb-2">
+            <input
+              type="time"
+              placeholder="Horário (HH:MM:SS)"
+              {...register("time", { required: "Horário é obrigatório." })}
+              className={`p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700 ${
+                errors.time ? "border-red-500" : ""
+              }`}
+            />
+            {errors.time && (
+              <p className="text-red-500 text-sm">{errors.time.message}</p>
+            )}
+          </div>
 
-              // Adiciona os ":" automaticamente
-              if (value.length >= 5) {
-                value = `${value.slice(0, 2)}:${value.slice(
-                  2,
-                  4
-                )}:${value.slice(4, 6)}`;
-              } else if (value.length >= 3) {
-                value = `${value.slice(0, 2)}:${value.slice(2, 4)}`;
-              }
-
-              setFormData({ ...formData, time: value });
-            }}
-            placeholder="Horário (00:00:00)"
-            className="mb-2 p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700"
-          />
-
-          <input
-            type="date"
-            value={formData.date}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            placeholder="Data"
-            className="mb-4 p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700"
-            min={new Date().toISOString().split("T")[0]}
-          />
+          <div className="mb-4">
+            <input
+              type="date"
+              {...register("date", { required: "Data é obrigatória." })}
+              className={`p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700 ${
+                errors.date ? "border-red-500" : ""
+              }`}
+              min={new Date().toISOString().split("T")[0]}
+            />
+            {errors.date && (
+              <p className="text-red-500 text-sm">{errors.date.message}</p>
+            )}
+          </div>
 
           <div className="flex justify-between">
             <button
@@ -239,8 +174,6 @@ const AddingTravelPopup = ({
             </button>
           </div>
         </form>
-        </div>
-
       </div>
     </div>
   );

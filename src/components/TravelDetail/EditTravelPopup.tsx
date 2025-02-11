@@ -2,16 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
-// import { Trip } from "@/types/trip";
-import { Trip } from "./Details"; // Ajuste o caminho conforme necessário
-
-// type Trip = {
-//   id: number; // ID da viagem
-//   origin: string; // Origem da viagem
-//   destination: string; // Destino da viagem
-//   time: string; // Horário da viagem
-//   date: string; // Data da viagem
-// };
+import { Trip } from "./Details";
 
 type EditTravelPopupProps = {
   trip: Trip;
@@ -72,30 +63,32 @@ const EditTravelPopup = ({
         <form onSubmit={handleSubmit}>
           <input
             type="text"
+            name="origin"
             value={formData.origin}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                origin:
-                  e.target.value.charAt(0).toUpperCase() +
-                  e.target.value.slice(1),
-              })
-            }
+            onChange={(e) => {
+              let value = e.target.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s]/g, ""); // Remove números e caracteres especiais
+              value = value.replace(/\s{2,}/g, " "); // Remove espaços duplos
+              value = value
+                .toLowerCase()
+                .replace(/^\w/, (c) => c.toUpperCase()); // Mantém a primeira letra maiúscula
+              setFormData({ ...formData, origin: value });
+            }}
             placeholder="Origem"
             className="mb-2 p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700"
           />
 
           <input
             type="text"
+            name="destination"
             value={formData.destination}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                destination:
-                  e.target.value.charAt(0).toUpperCase() +
-                  e.target.value.slice(1),
-              })
-            }
+            onChange={(e) => {
+              let value = e.target.value.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s]/g, ""); // Remove números e caracteres especiais
+              value = value.replace(/\s{2,}/g, " "); // Remove espaços duplos
+              value = value
+                .toLowerCase()
+                .replace(/^\w/, (c) => c.toUpperCase()); // Mantém a primeira letra maiúscula
+              setFormData({ ...formData, destination: value });
+            }}
             placeholder="Destino"
             className="mb-2 p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700"
           />
