@@ -24,7 +24,7 @@ export function ThemeToggle({ isDropDown = false }: { isDropDown?: boolean }) {
   }, []);
 
   if (!mounted) {
-    return null; // Or a loader, or whatever fallback you prefer
+    return null;
   }
   if (isDropDown) {
     return (
@@ -32,7 +32,7 @@ export function ThemeToggle({ isDropDown = false }: { isDropDown?: boolean }) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="inline-flex items-center mb-2 px-2 h-9 gap-2 w-full justify-start whitespace-nowrap rounded-md text-sm font-base transition-colors disabled:pointer-events-none disabled:opacity-50  focus:outline-none"
+            className="inline-flex items-center mb-2 px-2 h-9 gap-2 w-full justify-start whitespace-nowrap rounded-md shadow-sm text-sm font-base transition-colors disabled:pointer-events-none disabled:opacity-50  focus:outline-none dark:hover:bg-neutral-900 hover:bg-white"
           >
             <Sun
               className={cn(
@@ -80,7 +80,7 @@ export function ThemeToggle({ isDropDown = false }: { isDropDown?: boolean }) {
 
         <button
           className={cn(
-            theme === 'dark' ? 'bg-neutral-700 rounded-full' : 'bg-transparent',
+            theme === 'dark' ? 'bg-neutral-900 rounded-full' : 'bg-transparent',
             'p-1',
           )}
           onClick={() => setTheme('dark')}

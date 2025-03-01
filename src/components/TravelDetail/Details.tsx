@@ -90,11 +90,11 @@ const Details = ({ id }: DetailsProps) => {
   }
 
   return (
-    <div className="mt-6">
-      <h2 className="text-xl font-semibold">Detalhes da Viagem:</h2>
+    <div className="mt-6 ">
+      <h2 className="text-xl font-bold">Detalhes da Viagem:</h2>
 
       {/* Cabeçalho */}
-      <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 p-3 bg-blue-500 text-white font-bold rounded-t dark:bg-blue-600 dark:text-white">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 p-3 shadow-md bg-blue-500 text-white font-bold dark:bg-blue-600 dark:text-white">
         <div>Origem</div>
         <div>Destino</div>
         <div>Data</div>
@@ -104,7 +104,7 @@ const Details = ({ id }: DetailsProps) => {
       </div>
 
       {/* Detalhes da viagem */}
-      <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 p-3 border-b last:border-none bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 p-3 border-b last:border-none shadow-md bg-white hover:bg-[#f9f6fc] dark:bg-gray-800 dark:hover:bg-gray-700">
         {travels.map((trip) => (
           <React.Fragment key={trip.id}>
             <div>{trip.origin}</div>
@@ -115,7 +115,7 @@ const Details = ({ id }: DetailsProps) => {
             {/* Botão Editar */}
             <div>
               <button
-                className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700"
+                className="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-600"
                 onClick={() => handleOpenEditPopup(trip)} // Abre a modal
               >
                 Editar
@@ -141,7 +141,7 @@ const Details = ({ id }: DetailsProps) => {
             {/* Modal de Confirmação de Exclusão */}
             {showConfirmDelete && (
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                <div className="bg-gray-300 dark:bg-gray-800 p-6 rounded shadow-lg w-90">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-lg w-90">
                   <h2 className="text-xl font-semibold mb-4 text-center">
                     Você tem certeza?
                   </h2>
@@ -153,7 +153,7 @@ const Details = ({ id }: DetailsProps) => {
                       Excluir
                     </button>
                     <button
-                      className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-black"
+                      className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 text-white"
                       onClick={() => setShowConfirmDelete(false)} // Fecha a modal
                     >
                       Cancelar

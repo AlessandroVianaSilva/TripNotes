@@ -15,7 +15,7 @@ type Trip = {
 type AddingTravelPopupProps = {
   onTripSave: (newTrip: Trip) => void;
   setShowPopup: (show: boolean) => void;
-  userId: number; // Agora recebendo o userId
+  userId: number; 
 };
 
 const AddingTravelPopup = ({
@@ -38,7 +38,7 @@ const AddingTravelPopup = ({
     try {
       const { data, error } = await supabase
         .from("travels")
-        .insert([{ ...formData,  userId }]) // Corrigindo a estrutura do objeto
+        .insert([{ ...formData,  userId }]) 
         .select("*");
 
       if (error) {
@@ -72,7 +72,7 @@ const AddingTravelPopup = ({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded shadow-lg w-96">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-lg w-96">
         <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white text-center">
           Inserir dados
         </h2>

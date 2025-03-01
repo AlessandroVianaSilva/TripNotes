@@ -4,6 +4,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "celphone" TEXT,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateUt" TIMESTAMP(3) NOT NULL,
 
@@ -17,6 +18,7 @@ CREATE TABLE "travels" (
     "destination" TEXT NOT NULL,
     "time" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
+    "userId" INTEGER NOT NULL,
 
     CONSTRAINT "travels_pkey" PRIMARY KEY ("id")
 );
@@ -30,6 +32,8 @@ CREATE TABLE "passengers" (
     "number" TEXT NOT NULL,
     "street" TEXT NOT NULL,
     "price" TEXT NOT NULL,
+    "celphone" TEXT,
+    "observation" TEXT,
     "neighborhood" TEXT NOT NULL,
 
     CONSTRAINT "passengers_pkey" PRIMARY KEY ("id")
@@ -40,6 +44,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- AddForeignKey
+ALTER TABLE "travels" ADD CONSTRAINT "travels_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "passengers" ADD CONSTRAINT "passengers_tripId_fkey" FOREIGN KEY ("tripId") REFERENCES "travels"("id") ON DELETE CASCADE ON UPDATE CASCADE;

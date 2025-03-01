@@ -25,12 +25,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body 
+      className={inter.className}
+      >
         <ContextProvider>
           <Header />
           <div className="flex ">
             <SideNav />
-            <div className="w-full overflow-x-auto">
+            <div className="w-full overflow-x-auto bg-[#f9f6fc] dark:bg-[#070f18]">
               <div className="sm:h-[calc(99vh-60px)] overflow-auto ">
                 <div className="w-full flex justify-center mx-auto   overflow-auto h-[calc(100vh - 120px)] overflow-y-auto relative">
                   <div className="w-full md:max-w-6xl">{children}</div>

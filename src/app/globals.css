@@ -74,3 +74,15 @@
       @apply bg-background text-foreground;
     }
   }
+  /* Adicione isso no seu arquivo de estilos global */
+html, body {
+  min-height: 100%;
+  background-color: #f9f6fc; /* ou a cor que você deseja no modo claro */
+}
+
+/* Para o modo escuro */
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #070f18;
+  }
+}

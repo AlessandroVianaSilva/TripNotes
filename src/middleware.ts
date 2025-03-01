@@ -19,5 +19,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/viagem/:id*", "/viagem/:path*"], // Rotas protegidas
+  matcher: ["/", "/viagem/:id*", "/viagem/:path*", "/perfil"], // Rotas protegidas
 };

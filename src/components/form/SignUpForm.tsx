@@ -15,7 +15,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import GoogleSignInButton from '../GoogleSignInButton';
 import { useRouter } from 'next/navigation';
 import { useToast } from "@/components/ui/use-toast"
 
@@ -72,8 +71,9 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-500"> {/* Cor de fundo para a tela inteira */}
+    <div className="min-h-screen flex items-center justify-center bg-[#f9f6fc]"> {/* Cor de fundo para a tela inteira */}
       <div className="w-full max-w-md p-6 bg-white shadow-md rounded-lg"> {/* Fundo branco apenas para o formulário */}
+      <h2 className="text-xl font-bold text-center">Cadastro</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
@@ -138,14 +138,11 @@ const SignUpForm = () => {
                 )}
               />
             </div>
-            <Button className="w-full mt-6" type="submit">
+            <Button className="w-full mt-6 bg-blue-700 hover:bg-blue-600" type="submit">
               Cadastre
             </Button>
           </form>
-          <div className="mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400">
-            ou
-          </div>
-          <GoogleSignInButton>Login com o Google</GoogleSignInButton>
+          
           <p className="text-center text-sm text-gray-600 mt-2">
             Se você tem uma conta, por favor{' '}
             <Link className="text-blue-500 hover:underline" href="/login">

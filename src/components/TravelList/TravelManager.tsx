@@ -23,14 +23,6 @@ const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false); // Modal de confirmação de exclusão
   const [tripToDelete, setTripToDelete] = useState<Trip | null>(null); // Viagem a ser excluída
   const router = useRouter();
-  // const [userId, setUserId] = useState<number | null>(null);
-
-  // Busca viagens quando userId estiver definido
-  useEffect(() => {
-    if (userId !== null) {
-      fetchTravels();
-    }
-  }, [userId]);
 
   // Busca viagens quando userId estiver definido
   useEffect(() => {
@@ -70,7 +62,7 @@ const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
     console.log("Nova viagem recebida no pai:", newTrip);
     setTravels((prevTravels) => {
       console.log("Viagens anteriores:", prevTravels); // Log para verificar o estado anterior
-      return [...prevTravels, newTrip]; // Adiciona a nova viagem ao estado
+      return [newTrip, ...prevTravels]; // Adiciona a nova viagem ao estado
     });
     setShowPopup(false); // Fecha o popup
   };
@@ -106,19 +98,16 @@ const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
     setShowConfirmDelete(true); // Exibe a modal de confirmação
   };
 
-  // // Carrega as viagens ao montar o componente
-  // useEffect(() => {
-  //   fetchTravels();
-  // }, [userId]); // Recarrega quando o userId mudar
+
 
   return (
-    <div className="p-4">
+    <div className="p-4 bg-[#f9f6fc] dark:bg-[#070f18]">
       <div>
-        <h1 className="text-2xl font-bold mb-4">Gerenciamento de Viagens</h1>
+        <h1 className="text-2xl font-bold mb-4">Organização de Viagens</h1>
 
         {/* Botão para abrir o popup */}
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
           onClick={() => setShowPopup(true)}
         >
           Adicionar viagem
@@ -127,8 +116,8 @@ const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
         {/* Popup para adicionar viagem */}
         {showPopup && userId && (
           <AddingTravelPopup
-            onTripSave={handleTripSave} // Passando a função para salvar a viagem
-            setShowPopup={setShowPopup} // Passando a função para fechar o popup
+            onTripSave={handleTripSave} //  função para salvar a viagem
+            setShowPopup={setShowPopup} // função para fechar o popup
             userId={userId} // Passando o ID do usuário para o componente filho
           />
         )}
@@ -153,7 +142,7 @@ const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
             {travels.map((trip) => (
               <div
                 key={trip.id}
-                className="grid grid-cols-3 sm:grid-cols-5 gap-4 p-3 border-b last:border-none bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+                className="grid grid-cols-3 sm:grid-cols-5 gap-4 p-3 border-b last:border-none bg-white hover:bg-[#f9f6fc] dark:bg-gray-700 dark:hover:bg-gray-600 shadow-md"
               >
                 {/* Colunas com dados */}
                 <div>{trip.origin}</div>
@@ -163,7 +152,7 @@ const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
                 {/* Botão Visualizar */}
                 <div>
                   <button
-                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
+                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
                     onClick={() => router.push(`/viagem/${trip.id}`)}
                   >
                     Visualizar
@@ -174,7 +163,7 @@ const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
                 <div>
                   <button
                     className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-                    onClick={() => handleOpenDeleteConfirm(trip)} // Chama a função para abrir a modal
+                    onClick={() => handleOpenDeleteConfirm(trip)} //  função para abrir a modal
                   >
                     Excluir
                   </button>
@@ -190,13 +179,13 @@ const TravelManager: React.FC<TravelManagerProps> = ({ userId }) => {
       {/* Modal de confirmação de exclusão */}
       {showConfirmDelete && tripToDelete && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-gray-300 dark:bg-gray-800 p-6 rounded shadow-lg w-96">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-lg w-96">
             <h2 className="text-xl font-semibold mb-4 text-center">
               Você tem certeza?
             </h2>
             <div className="flex justify-between">
               <button
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 onClick={() => setShowConfirmDelete(false)} // Fecha a modal
               >
                 Não

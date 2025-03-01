@@ -14,6 +14,8 @@ interface Passenger {
   tripId: number;
   price: string;
   neighborhood: string;
+  celphone?: string;
+  observation?: string;
 }
 
 const TripPassengerList = ({ tripId }: { tripId: number }) => {
@@ -38,7 +40,7 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
   };
 
   const handlePassengerSave = (newPassenger: Passenger) => {
-    setPassengers((prev) => [...prev, newPassenger]);
+    setPassengers((prev) => [newPassenger, ...prev]);
     setShowPopup(false);
   };
 
@@ -81,7 +83,7 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
   }, []);
 
   return (
-    <div className="p-4">
+    <div className="mt-4">
       <h1 className="text-2xl font-bold mb-4">Passageiros</h1>
 
       <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={() => setShowPopup(true)}>
@@ -100,7 +102,7 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
         />
       )}
 
-      <div className="mt-6">
+      <div className="mt-6 ">
         {passengers.length > 0 ? (
           <div className="mt-4">
             <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 p-3 bg-blue-500 text-white font-bold rounded-t dark:bg-blue-600 dark:text-white">
@@ -112,7 +114,7 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
             </div>
 
             {passengers.map((passenger) => (
-              <div key={passenger.id} className="grid grid-cols-3 sm:grid-cols-5 gap-3 p-4 border-b last:border-none bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600">
+              <div key={passenger.id} className="grid grid-cols-3 sm:grid-cols-5 gap-3 p-4 border-b last:border-none bg-white hover:bg-[#f9f6fc] dark:bg-gray-800 dark:hover:bg-gray-700 shadow-md">
                 <div>{passenger.price}</div>
                 <div>{passenger.name}</div>
                 <div>{passenger.neighborhood}</div>
@@ -135,13 +137,13 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
       {/* Modal de confirmação de exclusão */}
       {showConfirmDelete && passengerToDelete !== null && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-gray-300 dark:bg-gray-800 p-6 rounded shadow-lg w-96">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-lg w-96">
             <h2 className="text-xl font-semibold mb-4 text-center">Você tem certeza?</h2>
             <div className="flex justify-center space-x-4">
               <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onClick={handleDeletePassenger}>
                 Excluir
               </button>
-              <button className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 text-black" onClick={() => setShowConfirmDelete(false)}>
+              <button className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-700 text-white" onClick={() => setShowConfirmDelete(false)}>
                 Cancelar
               </button>
             </div>

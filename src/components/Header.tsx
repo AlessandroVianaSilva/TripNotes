@@ -36,7 +36,7 @@ const Header = () => {
         "bg-white shadow-lg py-2 z-50"
       } fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300`}
     >
-      <div className="mx-auto max-w-full px-6 lg:px-20 3xl:px-0 flex items-center justify-between">
+      <div className="mx-auto max-w-full px-6 lg:px-20 3xl:px-0 flex items-center ">
         {/* logo */}
         <div className="flex items-center justify-center">
           <Image
@@ -46,22 +46,6 @@ const Header = () => {
             height={120}
           />
         </div>
-
-        {/* web */}
-        {/* <Nav
-          containerStyles={"hidden lg:flex gap-x-10 items-start justify-center"}
-          linkStyles={"capitalize cursor-pointer my-4 relative transition-all"}
-        /> */}
-
-        {/* mobile */}
-        {/* <Nav
-          containerStyles={`${
-            menuOpened
-              ? "flex items-start flex-col justify-center fixed top-20 p-12 bg-white rounded-lg transition-all duration-500 shawdow-md right-0 w-60"
-              : "flex items-start flex-col justify-center fixed top-20 p-12 bg-white rounded-lg transition-all duration-500 shawdow-md right-[-100%] w-60"
-          }`}
-          linkStyles={"capitalize cursor-pointer my-4 relative transition-all"}
-        /> */}
 
         {/* icones e botoes */}
         <div className="flex items-center justify-center">

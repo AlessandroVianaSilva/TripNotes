@@ -11,6 +11,8 @@ type Passenger = {
   tripId: number;
   price: string;
   neighborhood: string;
+  celphone?: string;
+  observation?: string;
 };
 
 type AddingPassengerPopupProps = {
@@ -37,6 +39,8 @@ const AddingPassengerPopup = ({
       tripId: tripId,
       price: "",
       neighborhood: "",
+      celphone: "",
+      observation: "",
     },
   });
 
@@ -102,9 +106,8 @@ const AddingPassengerPopup = ({
                       .replace(/\b\w/g, (char: string) => char.toUpperCase()), // Torna a primeira letra de cada palavra maiúscula
                 })}
                 onChange={(e) => {
-                  
                   e.target.value = e.target.value
-                  
+
                     .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s]/g, "") // Remove números e caracteres especiais
                     .toLowerCase() // Converte todas as letras para minúsculas
                     .replace(/\b\w/g, (char) => char.toUpperCase()); // Torna a primeira letra de cada palavra maiúscula
@@ -148,7 +151,7 @@ const AddingPassengerPopup = ({
 
             {/* Bairro */}
             <div className="mb-2">
-            <input
+              <input
                 type="text"
                 placeholder="Bairro"
                 {...register("neighborhood", {
@@ -182,7 +185,7 @@ const AddingPassengerPopup = ({
 
             {/* Rua */}
             <div className="mb-2">
-            <input
+              <input
                 type="text"
                 placeholder="Rua"
                 {...register("street", {
@@ -234,6 +237,88 @@ const AddingPassengerPopup = ({
               />
               {errors.number && (
                 <p className="text-red-500 text-sm">{errors.number.message}</p>
+              )}
+            </div>
+            
+            {/* Celular */}
+            <div className="mb-2">
+              <input
+                type="text"
+                placeholder="(XX) XXXXX-XXXX"
+                inputMode="numeric"
+                {...register("celphone", {
+                  // required: "Número é obrigatório.",
+                  validate: (value) => {
+                    if (!value) return "Número é obrigatório."; // Garante que value não é undefined
+                    const digits = value.replace(/\D/g, ""); // Apenas números
+                    return (
+                      digits.length === 11 || "Número deve ter 11 dígitos."
+                    );
+                  },
+                  onChange: (e) => {
+                    let value = e.target.value || ""; // Garante que value não é undefined
+                    value = value.replace(/\D/g, ""); // Remove não numéricos
+
+                    // Limita a 11 dígitos
+                    if (value.length > 11) value = value.slice(0, 11);
+
+                    // Aplica formatação (XX)XXXXX-XXXX
+                    if (value.length <= 2) {
+                      value = `(${value}`;
+                    } else if (value.length <= 7) {
+                      value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+                    } else {
+                      value = `(${value.slice(0, 2)}) ${value.slice(
+                        2,
+                        7
+                      )}-${value.slice(7)}`;
+                    }
+
+                    e.target.value = value;
+                  },
+                })}
+                className={`p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700 ${
+                  errors.celphone ? "border-red-500" : ""
+                }`}
+              />
+              {errors.celphone && (
+                <p className="text-red-500 text-sm">
+                  {errors.celphone.message}
+                </p>
+              )}
+            </div>
+
+            {/* Observação */}
+            <div className="mb-2">
+              <textarea
+                placeholder="Observação"
+                maxLength={100} // Limita a 100 caracteres
+                {...register("observation", {
+                  maxLength: {
+                    value: 100,
+                    message: "Máximo de 100 caracteres.",
+                  },
+                  setValueAs: (value) =>
+                    value
+                      .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s]/g, "") // Remove números e caracteres especiais
+                      .toLowerCase() // Converte todas as letras para minúsculas
+                      .replace(/\b\w/g, (char: string) => char.toUpperCase()), // Primeira letra maiúscula
+                })}
+                onChange={(e) => {
+                  e.target.value = e.target.value
+                    .slice(0, 100) // Garante que não passe de 100 caracteres
+                    .replace(/[^A-Za-zÀ-ÖØ-öø-ÿ\s]/g, "") // Remove caracteres inválidos
+                    .toLowerCase()
+                    .replace(/\b\w/g, (char) => char.toUpperCase());
+                }}
+                className={`p-2 w-full border rounded text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700 resize-none h-24 ${
+                  errors.observation ? "border-red-500" : ""
+                }`}
+              />
+              {errors.observation && (
+                <p className="text-red-500 text-sm">
+                  {errors.observation.message}
+                </p>
               )}
             </div>
 
