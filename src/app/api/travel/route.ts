@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '../../../lib/db'; // Ajuste o caminho conforme sua estrutura
 
 export async function POST(request: Request) {
-  const { origin, destination, time, date } = await request.json();
+  const { origin, destination, time, date, userId } = await request.json();
 
   try {
     const newTrip = await prisma.travel.create({
@@ -11,6 +11,7 @@ export async function POST(request: Request) {
         destination,
         time,
         date: new Date(date),
+        userId,
       },
     });
 
