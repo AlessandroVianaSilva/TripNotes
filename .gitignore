@@ -30,10 +30,12 @@ yarn-error.log*
 
 .env
 
+
 /src/app/lib/firebase.ts
 
 # vercel
 .vercel
+.vercel.json
 
 # typescript
 *.tsbuildinfo
