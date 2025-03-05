@@ -12,6 +12,7 @@ import SideNav from '@/components/navbar/Sidenav';
 import Header from '../../../(home)/header';
 
 const inter = Inter({ subsets: ['latin'] });
+import "@fontsource/inter"; 
 
 export const metadata: Metadata = {
   title: 'TripNotes',

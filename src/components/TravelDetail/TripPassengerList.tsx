@@ -2,7 +2,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabaseClient";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import AddingPassengerPopup from "./AddingPassengerPopup";
 import EditPassengerPopup from "./EditPassengerPopup"; // Importe o popup de edição
 
@@ -26,7 +26,19 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [passengerToDelete, setPassengerToDelete] = useState<number | null>(null);
 
-  const fetchPassengers = async () => {
+  // const fetchPassengers = async () => {
+  //   const { data, error } = await supabase
+  //     .from("passengers")
+  //     .select("*")
+  //     .eq("tripId", tripId);
+
+  //   if (error) {
+  //     console.error("Erro ao buscar passageiros:", error.message);
+  //   } else if (data) {
+  //     setPassengers(data as Passenger[]);
+  //   }
+  // };
+  const fetchPassengers = useCallback(async () => {
     const { data, error } = await supabase
       .from("passengers")
       .select("*")
@@ -35,9 +47,9 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
     if (error) {
       console.error("Erro ao buscar passageiros:", error.message);
     } else if (data) {
-      setPassengers(data as Passenger[]);
+      setPassengers(data);
     }
-  };
+  }, [tripId]);
 
   const handlePassengerSave = (newPassenger: Passenger) => {
     setPassengers((prev) => [newPassenger, ...prev]);
@@ -80,7 +92,7 @@ const TripPassengerList = ({ tripId }: { tripId: number }) => {
 
   useEffect(() => {
     fetchPassengers();
-  }, []);
+  }, [fetchPassengers]);
 
   return (
     <div className="mt-4">
