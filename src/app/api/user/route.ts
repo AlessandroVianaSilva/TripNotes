@@ -21,7 +21,7 @@ const userSchema = z
 
 export async function POST(req: Request) {
     console.log(process.env.DATABASE_URL, 'front e back')
-    console.log(process.env.NEXT_PUBLIC_SUPABASE_URL, 'front e back')
+    console.log(process.env.NEXT_PUBLIC_SUPABASE_URL, 'front e back prisma')
     try {
         const body = await req.json();
         console.log("Recebendo requisição com body:", body); // Log para debug
