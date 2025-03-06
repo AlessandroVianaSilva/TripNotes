@@ -48,7 +48,7 @@ const SignUpForm = () => {
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     console.log(process.env.NEXT_DATABASE_URL, 'front e back')
-    console.log(process.env.NEXT_PUBLIC_SUPABASE_URL, 'front e back')
+    console.log(process.env.NEXT_PUBLIC_SUPABASE_URL, 'front e backss')
     const response = await fetch('/api/user', {
       method: "POST",
       headers: {
