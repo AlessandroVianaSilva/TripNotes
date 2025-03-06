@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,9 +13,9 @@ model User {
   username String   @unique
   password String
   celphone String?
-  travels  Travel[]  // Relacionamento 1 para muitos
   createAt DateTime @default(now())
   updateUt DateTime @updatedAt
+  travels  Travel[]
 }
 
 model Travel {
@@ -30,26 +24,25 @@ model Travel {
   destination String
   time        String
   date        DateTime
-  userId      Int      // Chave estrangeira
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
   passengers  Passenger[]
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("travels")
 }
 
 model Passenger {
-  id        Int      @id @default(autoincrement())
-  tripId    Int
-  name      String
-  createdAt DateTime @default(now())
-  number    String
-  street    String
-  price     String
-  celphone String?
-  observation String?
-
-  neighborhood    String
-  Travel    Travel   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  id           Int      @id @default(autoincrement())
+  tripId       Int
+  name         String
+  createdAt    DateTime @default(now())
+  number       String
+  street       String
+  price        String
+  celphone     String?
+  observation  String?
+  neighborhood String
+  Travel       Travel   @relation(fields: [tripId], references: [id], onDelete: Cascade)
 
   @@map("passengers")
 }
