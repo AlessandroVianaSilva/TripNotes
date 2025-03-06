@@ -20,6 +20,7 @@ const userSchema = z
 // }
 
 export async function POST(req: Request) {
+    console.log(process.env.NEXT_DATABASE_URL, 'front e back')
     try {
         const body = await req.json();
         console.log("Recebendo requisição com body:", body); // Log para debug

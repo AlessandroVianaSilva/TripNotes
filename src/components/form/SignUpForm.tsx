@@ -47,6 +47,7 @@ const SignUpForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    console.log(process.env.NEXT_DATABASE_URL, 'front e back')
     const response = await fetch('/api/user', {
       method: "POST",
       headers: {
